@@ -4,7 +4,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import DevelopmentConfig
 from app.routs import configure_routs
-from main_ import app
+
 
 from app.extentions import mongo
 
