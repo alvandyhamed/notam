@@ -2,7 +2,7 @@ import os
 from flask import request
 from flask_restx import Resource
 
-from app.config import ProductionConfig
+from app.config import ProductionConfig, DevelopmentConfig
 from app.extentions import notam_ns
 from app.models.swagger_models.request_parsers import notam_search
 from app.models.swagger_models.response_models import get_response_models
@@ -18,6 +18,8 @@ class BaseController(Resource):
     env=os.environ.get("FLASK_ENV", "development")
     if env == "production":
         config=ProductionConfig()
+    else:
+        config=DevelopmentConfig()
 
 
     def handle_request(self,context,operation,retrieveLocId=None):

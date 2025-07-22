@@ -1,9 +1,13 @@
 from flask import Flask
+from flask_pymongo import PyMongo
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import DevelopmentConfig
 from app.routs import configure_routs
 from main_ import app
+
+from app.extentions import mongo
+
 
 
 def create_app(config_class=DevelopmentConfig):
@@ -16,6 +20,8 @@ def create_app(config_class=DevelopmentConfig):
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config.from_object(config_class)
+
+    mongo.init_app(app)
     configure_routs(app)
 
 

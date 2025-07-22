@@ -8,11 +8,12 @@ from app.workers.extract_notams_data import extract_notams_data
 
 
 def get_notam_from_thirdparty_site(retrieveLocId):
-    print(f"Retrieving Notam from thirdparty site:{retrieveLocId}")
+
     success, status_code, error, html_content = call_notam(retrieveLocId)
 
     if success:
         try:
+
 
             notam_json_data = extract_notams_data(html_content)
 
@@ -27,6 +28,7 @@ def get_notam_from_thirdparty_site(retrieveLocId):
 
 
             },200
+            return jsonify({})
 
 
         except Exception as e:

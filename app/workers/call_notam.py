@@ -2,9 +2,10 @@ from datetime import datetime
 
 import requests
 
+from app.models.logs import Logs
+
 
 def call_notam(retrieveLocId):
-
     url = 'https://www.notams.faa.gov/dinsQueryWeb/queryRetrievalMapAction.do'
     params = {
         'reportType': 'Report',
@@ -42,12 +43,15 @@ def call_notam(retrieveLocId):
             #     f.write(response.text)
             # with open(SUCCESS_LOG, 'a') as slog:
             #     slog.write(f"{now}: {response.status_code}: success ({retrieveLocId})\n")
+            Logs.create("Success", now, response.text)
             return True, response.status_code, None, response.text
         else:
             # with open(ERROR_LOG, 'a') as elog:
             #     elog.write(f"{now}: {response.status_code}: {response.reason} ({retrieveLocId})\n")
+            Logs.create("Error", now, response)
             return False, response.status_code, response.reason, None
     except Exception as e:
         # with open(ERROR_LOG, 'a') as elog:
         #     elog.write(f"{now}: N/A: {str(e)} ({retrieveLocId})\n")
+        Logs.create("Error", now, str(e))
         return False, None, str(e), None
