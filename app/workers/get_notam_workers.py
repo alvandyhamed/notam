@@ -32,7 +32,6 @@ def get_notam_from_thirdparty_site(retrieveLocId):
 
 
             },200
-            return jsonify({})
 
 
         except Exception as e:

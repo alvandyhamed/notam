@@ -20,7 +20,7 @@ class Config(object):
 
 class ProductionConfig(Config):
     DEBUG = False
-    MONGO_URI = f"mongodb://{Config.MONGO_USERNAME}:{Config.MONGO_PASSWORD}@{Config.MONGO_HOST}:{Config.MONGO_PORT}/{Config.MONGO_DBNAME}"
+    MONGO_URI = f"mongodb://{Config.MONGO_USERNAME}:{Config.MONGO_PASSWORD}@{Config.MONGO_HOST}:{Config.MONGO_PORT}/{Config.MONGO_DBNAME}?authSource=admin"
 
 class DevelopmentConfig(Config):
     DEBUG = True
