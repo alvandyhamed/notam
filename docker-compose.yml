@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notam
+    restart: unless-stopped
+    ports:
+      - "5057:5057"
+    volumes:
+      - .:/app
+    env_file:
+      - .env.production
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+  mongodb:
+    image: mongo:6
+    container_name: notam_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: notam_database
+      MONGO_INITDB_ROOT_USERNAME: notam
+      MONGO_INITDB_ROOT_PASSWORD: Hamed1363
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mongodb_data:
