@@ -9,7 +9,7 @@ from app.workers.call_notam import call_notam
 from app.workers.extract_notams_data import extract_notams_data
 
 
-def get_notam_from_thirdparty_site(retrieveLocId):
+def get_notam_from_thirdparty_site(retrieveLocId,flight_number,user_id,date,rout):
 
     success, status_code, error, html_content = call_notam(retrieveLocId)
 
@@ -20,7 +20,7 @@ def get_notam_from_thirdparty_site(retrieveLocId):
             notam_json_data = extract_notams_data(html_content)
 
 
-            Notam.create(notam_json_data['total_notams'],notam_json_data['notams'])
+            Notam.create(notam_json_data['total_notams'],notam_json_data['notams'],flight_number,user_id,date,rout)
 
 
 

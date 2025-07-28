@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_pymongo import PyMongo
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -11,6 +13,9 @@ from app.extentions import mongo
 
 
 def create_app(config_class=ProductionConfig):
+    flask_env = os.getenv("FLASK_ENV", "production")
+    config_class = DevelopmentConfig if flask_env == "development" else ProductionConfig
+
     app = Flask(__name__, instance_relative_config=True)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
     app.config.from_object(config_class or ProductionConfig)
@@ -23,6 +28,8 @@ def create_app(config_class=ProductionConfig):
 
     mongo.init_app(app)
     configure_routs(app)
+
+    print(app.config['MONGO_URI'])
 
 
     return app
