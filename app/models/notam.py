@@ -8,10 +8,11 @@ import jdatetime
 
 class Notam:
     @staticmethod
-    def create(total_notams,notams,flight_number,user_id,date,rout):
+    def create(loc_id,total_notams,notams,flight_number,user_id,date,rout):
         now = datetime.now()
         jalali_date = jdatetime.date.today()
         notam={
+            "loc_id": loc_id,
             'flight_number':flight_number,
             'user_id':user_id,
             'report_date':date,

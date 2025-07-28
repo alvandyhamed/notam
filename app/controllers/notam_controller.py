@@ -17,47 +17,59 @@ for model_name, model in response_models.items():
 
 
 class BaseController(Resource):
-    env=os.environ.get("FLASK_ENV", "development")
+    env = os.environ.get("FLASK_ENV", "development")
     if env == "production":
-        config=ProductionConfig()
+        config = ProductionConfig()
     else:
-        config=DevelopmentConfig()
+        config = DevelopmentConfig()
 
-
-    def handle_request(self,context,operation,retrieveLocId=None,flight_number=None,user_id=None,date=None,rout=None):
-
+    def handle_request(self, context, operation, retrieveLocId=None, flight_number=None, user_id=None, date=None,
+                       rout=None):
 
         if operation == "get":
-            return self._get_notam(context,retrieveLocId,flight_number,user_id,date,rout)
+            return self._get_notam(context, retrieveLocId, flight_number, user_id, date, rout)
+        if operation == "post":
+            data = request.get_json()
+            return self._get_notams(context, data)
 
-    def _get_notam(self,context,retrieveLocId,flight_number,user_id,date,rout):
+    def _get_notams(self, context, data):
         try:
-            response, status_code=context.get_Notam(retrieveLocId,flight_number,user_id,date,rout)
+            response, status_code = context.get_Notams(data)
             if status_code == 200:
-                return response,status_code
+                return response, status_code
             else:
-                return response,status_code
+                return response, status_code
+        except Exception as e:
+            return f"There is an issueP{str(e)}", 500
+
+    def _get_notam(self, context, retrieveLocId, flight_number, user_id, date, rout):
+        try:
+            response, status_code = context.get_Notam(retrieveLocId, flight_number, user_id, date, rout)
+            if status_code == 200:
+                return response, status_code
+            else:
+                return response, status_code
 
         except Exception as e:
-            print(e)
-            return "There is an issue",500
+
+            return f"There is an issue{str(e)}", 500
+
 
 @notam_decorato
 class NotamController(BaseController):
 
     @notam_ns.expect(notam_search)
     @notam_ns.marshal_with(response_models["get_notam"])
-    def get(self,context,**kwargs):
+    def get(self, context, **kwargs):
         retrieveLocId = request.args.get("retrieveLocId")
         flight_number = request.args.get("flight_number")
         user_id = request.args.get("user_id")
         date = request.args.get("date")
         rout = request.args.get("rout")
-        return self.handle_request(context,"get",retrieveLocId=retrieveLocId,flight_number=flight_number,user_id=user_id,date=date,rout=rout)
+        return self.handle_request(context, "get", retrieveLocId=retrieveLocId, flight_number=flight_number,
+                                   user_id=user_id, date=date, rout=rout)
 
     @notam_ns.expect(request_models["get_notams_request"])
-    @notam_ns.marshal_with(response_models["get_notam"])
-    def post(self,context,**kwargs):
-        retrieveLocId=self.handle_request(context,"post",retrieveLocId=request.args.get("retrieveLocId"))
-
-
+    @notam_ns.marshal_with(response_models["get_notams"])
+    def post(self, context, **kwargs):
+        return self.handle_request(context, "post")
